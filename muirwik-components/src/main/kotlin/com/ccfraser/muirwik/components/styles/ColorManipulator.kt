@@ -1,4 +1,5 @@
 @file:JsModule("@material-ui/core/styles/colorManipulator")
+@file:JsNonModule
 package com.ccfraser.muirwik.components.styles
 
 //external fun recomposeColor(color: ColorObject): string

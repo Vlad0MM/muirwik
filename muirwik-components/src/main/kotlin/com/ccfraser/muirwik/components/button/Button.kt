@@ -10,6 +10,7 @@ import styled.StyledHandler
 
 
 @JsModule("@material-ui/core/Button")
+@JsNonModule
 private external val buttonModule: dynamic
 
 @Suppress("UnsafeCastFromDynamic")
