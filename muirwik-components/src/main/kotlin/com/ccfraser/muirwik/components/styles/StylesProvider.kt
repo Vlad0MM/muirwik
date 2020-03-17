@@ -5,15 +5,18 @@ import kotlinext.js.Object
 import react.*
 
 @JsModule("@material-ui/styles/StylesProvider")
+@JsNonModule
 private external val stylesProviderModule: dynamic
 
 @Suppress("UnsafeCastFromDynamic")
 val stylesProviderComponent: RComponent<MStylesProviderProps, RState> = stylesProviderModule.default
 
 @JsModule("@material-ui/styles/jssPreset")
+@JsNonModule
 private external val jssPresetModule: dynamic
 
 @JsModule("jss")
+@JsNonModule
 private external val jss: dynamic
 
 

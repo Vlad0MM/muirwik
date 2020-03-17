@@ -43,6 +43,7 @@ external interface Theme {
 
 
 @JsModule("@material-ui/core/styles/createMuiTheme")
+@JsNonModule
 private external val createMuiThemeModule: dynamic
 
 @Suppress("UnsafeCastFromDynamic")

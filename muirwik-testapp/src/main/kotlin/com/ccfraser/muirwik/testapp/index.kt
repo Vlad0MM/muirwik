@@ -6,6 +6,7 @@ import kotlin.browser.document
 
 //@JsModule("react-hot-loader/root")
 @JsModule("react-hot-loader")
+@JsNonModule
 private external val hotModule: dynamic
 private val hot = hotModule.hot
 private val module = js("module")
