@@ -5,7 +5,10 @@ plugins {
     id("org.jetbrains.kotlin.js") version "1.3.70"
 }
 
-kotlin.target.browser { }
+kotlin.target {
+    useCommonJs()
+    browser { }
+}
 
 repositories {
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
