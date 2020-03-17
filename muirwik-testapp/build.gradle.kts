@@ -1,86 +1,32 @@
-import com.ccfraser.gradle.GradleWebpackPluginSettings
-import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
-import org.jetbrains.kotlin.gradle.tasks.KotlinJsDce
-
-val productionConfig: Boolean = (properties["production"] as String).toBoolean()
-//val production: Boolean by project
-
 version = "0.2.4"
 description = "Test Application for Muirwik (a Material UI React wrapper written in Kotlin)"
 
-buildscript {
-    var kotlinVersion: String by extra
-    kotlinVersion = "1.3.60"
-
-    repositories {
-        jcenter()
-        maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
-        maven { setUrl("https://dl.bintray.com/cfraser/gradle-webpack-plugin") }
-    }
-
-    dependencies {
-        classpath(kotlin("gradle-plugin", kotlinVersion))
-//        classpath(kotlin("frontend-plugin", "0.0.45"))
-        classpath("com.ccfraser.gradle:gradle-webpack-plugin:0.3.1")
-    }
-}
-
-apply {
-    plugin("kotlin2js")
-    plugin("kotlin-dce-js")
-//    plugin("org.jetbrains.kotlin.frontend")
-    plugin("com.ccfraser.gradle.gradle-webpack-plugin")
-}
-
 plugins {
-    java // Not sure why this is needed, but it makes the dependencies below work.
-    id("com.moowork.node") version "1.2.0"
+    id("org.jetbrains.kotlin.js") version "1.3.70"
 }
 
-val kotlinVersion: String by extra
+kotlin.target.browser { }
 
 repositories {
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+    maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
+    mavenCentral()
     jcenter()
-    mavenLocal()
-    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
-    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-dev") }
-    maven { setUrl("http://dl.bintray.com/kotlin/kotlin-js-wrappers") }
 }
 
 dependencies {
-    val kotlinJsVersion = "pre.89-kotlin-$kotlinVersion"
-    val kotlinReactVersion = "16.9.0-$kotlinJsVersion"
+    val kotlinReactVersion = "16.13.0-pre.93-kotlin-1.3.70"
+    implementation(kotlin("stdlib-js"))
+    implementation("org.jetbrains:kotlin-react:$kotlinReactVersion")
+    implementation("org.jetbrains:kotlin-react-dom:$kotlinReactVersion")
+    implementation("org.jetbrains:kotlin-styled:1.0.0-pre.93-kotlin-1.3.70")
 
-    implementation(kotlin("stdlib-js", kotlinVersion))
+    implementation(npm("react", "16.13.0"))
+    implementation(npm("react-dom", "16.13.0"))
+    implementation(npm("react-hot-loader", "4.12.8"))
 
-    implementation("org.jetbrains", "kotlin-react", kotlinReactVersion)
-    implementation("org.jetbrains", "kotlin-react-dom", kotlinReactVersion)
-    implementation("org.jetbrains", "kotlin-styled", "1.0.0-$kotlinJsVersion")
+    implementation(npm("styled-components"))
+    implementation(npm("inline-style-prefixer"))
 
     implementation(project(":muirwik-components"))
-}
-
-val compileKotlin2Js: Kotlin2JsCompile by tasks
-compileKotlin2Js.kotlinOptions {
-    sourceMap = true
-    if (!productionConfig) {
-        sourceMapEmbedSources = "always"
-    }
-    metaInfo = true
-    outputFile = "${project.buildDir.path}/js/app.js"
-    main = "call"
-    moduleKind = "commonjs"
-}
-
-val runDceKotlinJs: KotlinJsDce by tasks
-runDceKotlinJs.apply {
-    // Turns out that when devMode is true, it still copies all the required js modules but does not strip any
-    // code from them... just what we were doing with our copyJsForBundle task!
-    dceOptions.devMode = !productionConfig
-    dceOptions.outputDirectory = "${buildDir}/js-for-bundle"
-    keep.add("kotlin.defineModule")
-}
-
-configure<GradleWebpackPluginSettings> {
-    production = productionConfig
 }
